@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>정답을 입력하세요</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 18cm;
+            background: white;
+            font-family: Arial, sans-serif;
+            position: relative;
+        }
+        
+        .a4-sheet {
+            position: absolute;
+            top: 3cm;
+            left: 19.65cm;
+            width: 10cm;
+            height: 13cm;
+            border: none;
+            background: transparent;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .a4-sheet .image-number {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.4rem;
+            font-size: 0.9rem;
+            z-index: 1;
+        }
+
+        .a4-sheet img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        .page-title {
+            position: absolute;
+            top: 3cm;
+            left: 5cm;
+            font-size: 45px;
+            font-weight: bold;
+        }
+        
+        input[type="text"] {
+            padding: 15px 20px;
+            font-size: 16px;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            width: 300px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        input[type="text"]:focus {
+            border-color: #9bffd0;
+            box-shadow: 0 0 10px rgba(156, 255, 217, 0.5);
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <h1 class="page-title">역사 영화 포스터 퀴즈</h1>
+    <div class="a4-sheet">
+        <div class="image-number">1</div>
+        <img src="images/덩.jpg" alt="덩케르크 포스터">
+    </div>
+    <div class="container">
+        <input id="answerInput" type="text" placeholder="정답을 입력하세요...">
+    </div>
+    <script>
+        const posters = [
+            { src: 'images/덩.jpg', alt: '덩케르크 포스터' },
+            { src: 'images/사도.jpg', alt: '사도 포스터' },
+            { src: 'images/광해.jpg', alt: '광해 포스터' }
+        ];
+        let currentIndex = 0;
+        let displayCount = 1;
+        const imageElement = document.querySelector('.a4-sheet img');
+        const numberElement = document.querySelector('.a4-sheet .image-number');
+        const answerInput = document.getElementById('answerInput');
+        const remainingIndices = posters.map((_, index) => index).filter(index => index !== currentIndex);
+
+        function showPoster(index) {
+            imageElement.src = posters[index].src;
+            imageElement.alt = posters[index].alt;
+            numberElement.textContent = displayCount;
+        }
+
+        function nextPoster() {
+            if (remainingIndices.length === 0) return;
+            const randomPos = Math.floor(Math.random() * remainingIndices.length);
+            currentIndex = remainingIndices.splice(randomPos, 1)[0];
+            displayCount += 1;
+            showPoster(currentIndex);
+        }
+
+        function checkAnswer() {
+            if (answerInput.value.trim() === '정답') {
+                nextPoster();
+                answerInput.value = '';
+            }
+        }
+
+        answerInput.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                checkAnswer();
+            }
+        });
+
+        answerInput.addEventListener('blur', checkAnswer);
+    </script>
+</body>
